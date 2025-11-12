@@ -7,6 +7,12 @@ export const listHero = (
 ) => {
   const tx = new Transaction();
 
+  const PriceInMist = Number(priceInSui) * 1_000_000_000;
+
+  tx.moveCall({
+    target: `${packageId}::marketplace::list_hero`,
+    arguments: [tx.object(heroId), tx.pure.u64(PriceInMist)],
+  });
   // TODO: Convert SUI to MIST (1 SUI = 1,000,000,000 MIST)
   // const priceInMist = ?
 
