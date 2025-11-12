@@ -53,19 +53,26 @@ public fun battle(hero: Hero, arena: Arena, ctx: &mut TxContext) {
     object::delete(arena_id);
     let winner: Hero;
     let loser: Hero;
+    let winner_id: ID;
+    let loser_id: ID;
     if (hero.hero_power() > warrior.hero_power()) {
         winner = hero;
         loser = warrior;
+        winner_id = object::id(&winner);
+        loser_id = object::id(&loser);
+        transfer::public_transfer(winner, ctx.sender());
+        transfer::public_transfer(loser, ctx.sender());
     } else {
         winner = warrior;
         loser = hero;
+        winner_id = object::id(&winner);
+        loser_id = object::id(&loser);
+        transfer::public_transfer(winner, _owner);
+        transfer::public_transfer(loser, _owner);
     };
     event::emit(ArenaCompleted {
-        winner_hero_id: object::id(&winner),
-        loser_hero_id: object::id(&loser),
+        winner_hero_id: winner_id,
+        loser_hero_id: loser_id,
         timestamp: ctx.epoch_timestamp_ms(),
     });
-
-    transfer::public_transfer(winner, ctx.sender());
-    transfer::public_transfer(loser, ctx.sender());
 }
